@@ -50,17 +50,14 @@ class Player:
 
 	def addMoney(self,amount):
 		self.balance += amount
-		#print("amount added:",amount)
 
 	def removeMoney(self,amount):
 		self.balance -= amount
-		#print("amount removed:",amount)
 
 	def addToInventory(self,property_):
 		self.inventory.append(property_)
 
 	def buyProperty(self,property_):
-		#print("property bought")
 		property_.changeOwner(self)
 		self.removeMoney(property_.price)
 		self.addToInventory(property_)
@@ -370,15 +367,13 @@ class Yhteismaa:
 		if isinstance(card,int):
 			player.addMoney(card)
 		else:
-			if card == "start":
-				player.location = [0,0]
-				player.addMoney(200)
+			match card:
+				case "start":
+					player.location = [0,0]
+					player.addMoney(200)
 
-			elif card == "prison":
-				player.location = [1,0]
-
-			else:
-				print("shouldnt be here")
+				case "prison":
+					player.location = [1,0]
 
 		#if we run out of cards, shuffle the cards back in the pack
 		if len(self.cards) == 0:
@@ -483,11 +478,13 @@ class Board:
 if __name__ == "__main__":
 	data = [[],[]]
 	startMoney = 1500
-	miss = 0
 	percent = 0
+
 ################################################
-	simAmount = 1000000
+	simAmount = 10000
+	playerCount = 4
 ################################################
+
 	colorDataTotal = {"brown":0,"lightblue":0,"pink":0,"orange":0,"red":0,"yellow":0,"green":0,"darkblue":0}
 	colorDataWins = {"brown":0,"lightblue":0,"pink":0,"orange":0,"red":0,"yellow":0,"green":0,"darkblue":0}
 	for _ in range(simAmount):
@@ -496,13 +493,13 @@ if __name__ == "__main__":
 			percent += 10
 			print(f"{percent}%")
 
-		player1 = Player(startMoney)
-		player2 = Player(startMoney)
-		#player3 = Player(startMoney)
-		#player4 = Player(startMoney)
 
-		originalPlayers = [player1, player2]
-		players = [player1, player2]
+		originalPlayers = []
+		players = []
+		for i in range(playerCount):
+			player = Player(startMoney)
+			originalPlayers.append(player)
+			players.append(player)
 
 		game = Board()
 
@@ -566,16 +563,12 @@ if __name__ == "__main__":
 				draw = True
 				break
 
-		if draw:
-			pass
-		else:
-
+		if not draw:
 			for player in originalPlayers:
 				player.dataCheck()
-				#print(player.data)
 				for color in player.data:
 					colorDataTotal[color] += 1
-			#print()
+
 			winner = players[0]
 			for color in winner.data:
 				colorDataWins[color] += 1
